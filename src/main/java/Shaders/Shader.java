@@ -2,7 +2,9 @@ package Shaders;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.FloatBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -47,6 +49,15 @@ public class Shader {
 	}	
 	public void setVector3(String name, Vector3f value) {
 		GL20.glUniform3f(GL20.glGetUniformLocation(this.programID, name), value.x, value.y, value.z);
+	}
+	public void setMat4(String name, Matrix4f value) {
+		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+		value.get(fb);
+		GL20.glUniformMatrix4fv(GL20.glGetUniformLocation(this.programID, name), false, fb);
+	}
+	public void setVector4(String name, Vector4f value) {
+		GL20.glUniform4f(GL20.glGetUniformLocation(this.programID, name), value.x, value.y, value.z, value.w);
+		
 	}
 	
 	// Liest Shader-Programm aus Datei und erstellt Shader-Objekt
@@ -100,5 +111,5 @@ public class Shader {
 		return shaderProgram;
 			
 	}
-	
+
 }
