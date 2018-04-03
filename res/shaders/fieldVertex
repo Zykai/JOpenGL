@@ -1,0 +1,15 @@
+#version 330 core
+
+layout(location = 0) in vec2 vertexPosition;
+layout(location = 1) in vec3 vertexColor;
+
+uniform float height;
+uniform mat4 orto;
+uniform mat4 model;
+
+out vec3 col;
+
+void main(){
+	col = vertexColor;
+	gl_Position = orto * model * vec4(vertexPosition.x, vertexPosition.y + height, 0.0, 1.0);
+}
