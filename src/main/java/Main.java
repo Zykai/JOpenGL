@@ -23,7 +23,7 @@ public class Main {
 		f.setMouseListener(new MouseListener() {
 			@Override
 			public void mouseClick() {
-				
+				f.setColor(new Vector4f(1, 1, 1, 1));
 			}
 			
 			@Override 
@@ -64,7 +64,6 @@ public class Main {
 		// Main-Loop
 		while(!w.shouldClose()) {
 			w.clear();
-			
 			box.draw();
 			box.processInput(Globals.xMousePosition, Globals.yMousePosition, Globals.newClicked);
 			w.updateWindow();
