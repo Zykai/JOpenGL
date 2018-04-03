@@ -145,6 +145,43 @@ public class Field {
 		this.previousMouseOver = false;
 	}
 	
+	public Field() {
+		this.width = 0;
+		this.height = 0;
+		this.xPosition = 0;
+		this.yPosition = 0;
+		createModelMatrix();
+		this.color = new Vector4f(1,1,1,1);
+		this.mouseListener = new MouseListener();
+		this.previousMouseOver = false;
+	}
+	
+	public void setPosition(int xPosition,  int yPosition) {
+		this.xPosition = xPosition;
+		this.yPosition = yPosition;
+	}
+	
+	public void setXPosition(int xPosition) {
+		this.xPosition = xPosition;
+	}
+	
+	public void setYPosition(int yPosition) {
+		this.yPosition = yPosition;
+	}
+	
+	public void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+	
+	public void setWidth(int width) {
+		this.width = width;
+	}
+	
+	public void setHeight(int height) {
+		this.height = height;
+	}
+	
 	public void setMouseListener(MouseListener mouseListener) {
 		this.mouseListener = mouseListener;
 	}
