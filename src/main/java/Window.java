@@ -6,7 +6,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
@@ -54,7 +53,7 @@ public class Window {
 
 			// Window-Hints
 			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // Fenster ist anfangs versteckt
-			glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // Fenstergröße ist variabel
+			glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // FenstergrÃ¶ÃŸe ist variabel
 			// OpenGL Version 3.3
 			glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
 			glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -73,6 +72,25 @@ public class Window {
 					glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
 			});
 			
+			GLFW.glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+				Globals.xMousePosition = (int) xpos;
+				Globals.yMousePosition = (int) ypos;
+			});
+			GLFW.glfwSetMouseButtonCallback(window, (window, button, action, mode) -> {
+				if(button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+					Globals.mousePreviousClicked = Globals.mouseClicked;
+					
+					if(action == GLFW.GLFW_PRESS) {
+						Globals.mouseClicked = true;
+						Globals.newClicked = false;
+					}
+					else if(action == GLFW.GLFW_RELEASE) {
+						Globals.mouseClicked = false;
+						Globals.newClicked = Globals.mousePreviousClicked && !Globals.mouseClicked;
+					}
+				}
+				else Globals.newClicked = false;
+			});
 			// Ordnet Fenster in der Mitte an
 			try ( MemoryStack stack = stackPush() ) {
 				IntBuffer pWidth = stack.mallocInt(1); // int*
@@ -111,16 +129,22 @@ public class Window {
 			setClearColor(0.5f, 0.5f, 0.5f);
 	}
 	
-	// Leert den Framebuffer, d.h. aktuelles Bild wird gelöscht (und Tiefenwerte)
+	// Leert den Framebuffer, d.h. aktuelles Bild wird gelÃ¶scht (und Tiefenwerte)
 	public void clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	
 	public void updateWindow() {
+		Globals.newClicked = false;
 		// Tauschen der beiden Buffer
 		glfwSwapBuffers(window); // swap the color buffers
 		// Suche nach Events
 		glfwPollEvents();
+	}
+	
+	public void enableBlend() {
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glEnable( GL11.GL_BLEND );
 	}
 	
 	// Zeigt Fenster
@@ -133,7 +157,7 @@ public class Window {
 		GLFW.glfwHideWindow(window);
 	}
 	
-	// Schließt das Fenster
+	// SchlieÃŸt das Fenster
 	public void closeWindow() {
 		glfwFreeCallbacks(window);
 		glfwDestroyWindow(window);
@@ -142,12 +166,12 @@ public class Window {
 		glfwSetErrorCallback(null).free();
 	}
 	
-	// Überprüft ob das Fenster geschlossen werden soll
+	// ÃœberprÃ¼ft ob das Fenster geschlossen werden soll
 	public boolean shouldClose() {
 		return glfwWindowShouldClose(window);
 	}
 	
-	// Ändert die Farbe nach clear() Aufruf
+	// Ã„ndert die Farbe nach clear() Aufruf
 	public void setClearColor(float r, float g, float b) {
 		glClearColor(r, g, b, 0.0f);
 	}
